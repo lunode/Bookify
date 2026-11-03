@@ -33,5 +33,7 @@ internal sealed class ApartmentConfiguration : IEntityTypeConfiguration<Apartmen
             cleaningFeeBuilder.Property(c => c.Currency)
                 .HasConversion(currency => currency.Code, code => Currency.FromCode(code));
         });
+
+        builder.Property<uint>("Version").IsRowVersion();
     }
 }
