@@ -9,8 +9,8 @@ client_id=bookify-auth-client
 &client_secret=3E3yvXaYppoYBF3Ir6DgtEzADKKzSurZ
 &grant_type=password
 &scope=openid
-&username=test@test.com
-&password=123
+&username=user@test.com
+&password=12345
 
 ### Access Token
 # @name adminAccessToken

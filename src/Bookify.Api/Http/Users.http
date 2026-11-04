@@ -1,0 +1,12 @@
+@uri = http://localhost:5062/api
+
+### Register User
+POST {{uri}}/users/register
+Content-Type: application/json
+
+{
+  "email": "user@test.com",
+  "firstName": "user",
+  "lastName": "test",
+  "password": "12345"
+}
