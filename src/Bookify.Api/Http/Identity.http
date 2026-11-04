@@ -1,0 +1,23 @@
+@uri = http://localhost:18080
+
+### Access Token
+# @name tokenRequest
+POST {{uri}}/realms/bookify/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=bookify-auth-client
+&client_secret=3E3yvXaYppoYBF3Ir6DgtEzADKKzSurZ
+&grant_type=password
+&scope=openid
+&username=test@test.com
+&password=123
+
+### Access Token
+# @name adminAccessToken
+POST {{uri}}/realms/bookify/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=bookify-admin-client
+&client_secret=UZDmbNxWmV4TlpaCRcju6pMRsyuV3er1
+&grant_type=client_credentials
+&scope=openid
