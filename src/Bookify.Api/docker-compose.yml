@@ -27,6 +27,20 @@ services:
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     networks:
       - dev
+  keycloak:
+    image: keycloak/keycloak:26.8
+    container_name: keycloak
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    volumes:
+      - .container/keycloak:/opt/keycloak/data
+      - .files/bookify-realm-export.json:/opt/keycloak/data/import/bookify-realm-export.json
+    ports:
+      - 18080:8080
+    command: start-dev --import-realm
+    networks:
+      - dev
 networks:
   dev:
     external: true
