@@ -1,0 +1,4 @@
+@uri = http://localhost:5062/api
+
+### Search Apartment
+GET {{uri}}/apartments

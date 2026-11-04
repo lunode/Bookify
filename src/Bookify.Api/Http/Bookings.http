@@ -1,0 +1,20 @@
+@uri = http://localhost:5062/api
+
+@apartmentId = d71a90df-c3a5-490b-9179-00bbaeb18a27
+@userId = d71a90df-c3a5-490b-9179-00bbaeb18a27
+@bookingId = 
+
+### Reserve Booking
+POST {{uri}}/bookings
+Content-Type: application/json
+
+{
+  "apartmentId": "{{apartmentId}}",
+  "userId": "{{userId}}",
+  "startDate": "2026-11-04",
+  "endDate": "2026-11-03"
+}
+
+### Get Booking
+
+GET {{uri}}/bookings/{{bookingId}}
