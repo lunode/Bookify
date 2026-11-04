@@ -29,6 +29,13 @@ public static class DependencyInjection
 
         AddPersisitence(services, configuration);
 
+        AddAuthentication(services, configuration);
+
+        return services;
+    }
+
+    private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
+    {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
 
@@ -46,7 +53,11 @@ public static class DependencyInjection
         })
         .AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
-        return services;
+        services.AddHttpClient<IJwtService, JwtService>((serviceProvider, httpClient) =>
+        {
+            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
+        });
     }
 
     private static void AddPersisitence(IServiceCollection services, IConfiguration configuration)
