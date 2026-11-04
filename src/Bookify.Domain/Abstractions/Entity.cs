@@ -3,6 +3,7 @@ namespace Bookify.Domain.Abstractions;
 public class Entity
 {
     private readonly List<IDomainEvent> _domainEvents = new();
+    protected Entity() { }
     protected Entity(Guid id)
     {
         Id = id;
