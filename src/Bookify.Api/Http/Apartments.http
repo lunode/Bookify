@@ -2,3 +2,4 @@
 
 ### Search Apartment
 GET {{uri}}/apartments
+Authorization: Bearer {{$dotenv token}}
