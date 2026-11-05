@@ -1,12 +1,16 @@
+using Bookify.Application.Abstractions.Authentication;
 using Bookify.Application.Abstractions.Data;
 using Bookify.Application.Abstractions.Messaging;
 using Bookify.Domain.Abstractions;
+using Bookify.Domain.Bookings;
 using Dapper;
 
 namespace Bookify.Application.Bookings.GetBooking;
 
-public sealed class GetBookingQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
-     : IQueryHandler<GetBookingQuery, BookingResponse>
+public sealed class GetBookingQueryHandler(
+    ISqlConnectionFactory sqlConnectionFactory,
+    IUserContext userContext
+) : IQueryHandler<GetBookingQuery, BookingResponse>
 {
     const string sql = """
             SELECT
@@ -32,6 +36,10 @@ public sealed class GetBookingQueryHandler(ISqlConnectionFactory sqlConnectionFa
     {
         using var connection = sqlConnectionFactory.CreateConnection();
         var booking = await connection.QueryFirstOrDefaultAsync<BookingResponse>(sql, new { request.BookingId });
+        if (booking is null || booking.UserId != userContext.UserId)
+        {
+            return Result.Failure<BookingResponse>(BookingErrors.NotFound);
+        }
         return booking;
     }
 }
