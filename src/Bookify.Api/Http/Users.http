@@ -5,17 +5,23 @@ POST {{uri}}/users/register
 Content-Type: application/json
 
 {
-  "email": "user@test.com",
-  "firstName": "user",
+  "email": "user1@test.com",
+  "firstName": "user1",
   "lastName": "test",
   "password": "12345"
 }
 
 ### LogIn User
+# @name loginRequest
 POST {{uri}}/users/login
 Content-Type: application/json
 
 {
-  "email": "user@test.com",
+  "email": "user1@test.com",
   "password": "12345"
 }
+
+### Get User Profile
+GET {{uri}}/users/me
+Content-Type: application/json
+Authorization: Bearer {{loginRequest.response.body.accessToken}}
