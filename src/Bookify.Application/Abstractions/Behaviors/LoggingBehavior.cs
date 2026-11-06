@@ -1,6 +1,7 @@
 using Bookify.Domain.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace Bookify.Application.Abstractions.Behaviors;
 
@@ -11,7 +12,10 @@ public class LoggingBehavior<TRequest, TResponse>(
     where TRequest : IBaseRequest
     where TResponse : Result
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         var name = request.GetType().Name;
 
@@ -20,8 +24,18 @@ public class LoggingBehavior<TRequest, TResponse>(
             logger.LogInformation("Executing request {Request}", name);
 
             var result = await next();
-
-            logger.LogInformation("Request {Request} processed successfully", name);
+            if (result.IsSuccess)
+            {
+                logger.LogInformation("Request {Request} processed successfully", name);
+            }
+            else
+            {
+                // logger.LogError("Request {Request} processed with an {@error}", name, result.Error);
+                using (LogContext.PushProperty("Error", result.Error, true))
+                {
+                    logger.LogError("Request {Request} processed with error", name);
+                }
+            }
 
             return result;
         }

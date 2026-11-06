@@ -41,6 +41,19 @@ services:
     command: start-dev --import-realm
     networks:
       - dev
+  seq:
+    image: datalust/seq:2026.1
+    container_name: seq
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_NOAUTHENTICATION: true
+    volumes:
+      - .container/seq:/data
+    ports:
+      - 127.0.0.1:8080:80
+      - 127.0.0.1:5341:5341
+    networks:
+      - dev
 networks:
   dev:
     external: true

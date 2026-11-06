@@ -1,8 +1,14 @@
 using Bookify.Api.Extensions;
 using Bookify.Application;
 using Bookify.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(builder.Configuration);
+});
 
 // Add services to the container.
 
@@ -24,6 +30,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRequestContextLoggingMiddleware();
+
+app.UseSerilogRequestLogging();
 
 app.UseCustomExceptionHandler();
 
