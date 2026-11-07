@@ -1,3 +1,7 @@
+using Bookify.Api.Controllers.Apartments;
+using Bookify.Api.Controllers.Bookings;
+using Bookify.Api.Controllers.Reviews;
+using Bookify.Api.Controllers.Users;
 using Bookify.Api.Extensions;
 using Bookify.Api.OpenApi;
 using Bookify.Application;
@@ -60,6 +64,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// app.MapApartmentsEndpoints();
+// app.MapReviewEndpoints();
+// app.MapUsersEndpoints();
+// Asp.Versioning.Builder.ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+//     .HasApiVersion(new Asp.Versioning.ApiVersion(1))
+//     .ReportApiVersions()
+//     .Build();
+// var routeGroupBuilder = app.MapGroup("/api/v{version:apiVersion}").WithApiVersionSet(apiVersionSet);
+// routeGroupBuilder.MapBookingsEndpoints();
 
 app.MapHealthChecks("health", new HealthCheckOptions()
 {
