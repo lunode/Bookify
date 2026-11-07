@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Bookify.Application.Abstractions.Authentication;
 using Bookify.Application.Abstractions.Caching;
 using Bookify.Application.Abstractions.Clock;
@@ -47,6 +48,7 @@ public static class DependencyInjection
 
         AddHealthCheck(services, configuration);
 
+        AddApiVersion(services);
         return services;
     }
 
@@ -125,5 +127,23 @@ public static class DependencyInjection
             .AddRedis(configuration.GetConnectionString("Cache")!)
             .AddNpgSql(configuration.GetConnectionString("Database")!)
             .AddUrlGroup(new Uri(configuration["Keycloak:BaseUrl"]!), HttpMethod.Get, "keycloak");
+    }
+
+    private static void AddApiVersion(IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        })
+        .AddMvc()
+        .AddApiExplorer(options =>
+        {
+            // example: /api/v1/users/me, 'v' => v, V => 1
+            options.GroupNameFormat = "'v'V";
+            // example: /api/v{version}/users/me => /api/v1/users/me
+            options.SubstituteApiVersionInUrl = true;
+        });
     }
 }

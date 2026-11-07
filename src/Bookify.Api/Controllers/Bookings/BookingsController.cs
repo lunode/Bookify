@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bookify.Api.Controllers.Bookings;
 
 [Authorize]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 public class BookingsController(ISender sender) : ControllerBase
 {

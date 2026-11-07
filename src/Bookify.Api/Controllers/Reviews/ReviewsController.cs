@@ -7,7 +7,7 @@ namespace Bookify.Api.Controllers.Reviews;
 
 [Authorize]
 [ApiController]
-[Route("api/reviews")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class ReviewsController(ISender sender) : ControllerBase
 {
     [HttpPost]

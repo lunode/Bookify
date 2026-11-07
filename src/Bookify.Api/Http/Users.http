@@ -13,7 +13,7 @@ Content-Type: application/json
 
 ### LogIn User
 # @name loginRequest
-POST {{uri}}/users/login
+POST {{uri}}/v1/users/login
 Content-Type: application/json
 
 {
