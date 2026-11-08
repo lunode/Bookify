@@ -15,6 +15,7 @@ using Bookify.Infrastructure.Caching;
 using Bookify.Infrastructure.Clock;
 using Bookify.Infrastructure.Data;
 using Bookify.Infrastructure.Email;
+using Bookify.Infrastructure.Outbox;
 using Bookify.Infrastructure.Repositories;
 using Dapper;
 using Microsoft.AspNetCore.Authentication;
@@ -24,7 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
+using Quartz;
 using AuthenticationOptions = Bookify.Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = Bookify.Infrastructure.Authentication.AuthenticationService;
 using IAuthenticationService = Bookify.Application.Abstractions.Authentication.IAuthenticationService;
@@ -49,6 +50,9 @@ public static class DependencyInjection
         AddHealthCheck(services, configuration);
 
         AddApiVersion(services);
+
+        AddBackgroundJobs(services, configuration);
+
         return services;
     }
 
@@ -145,5 +149,35 @@ public static class DependencyInjection
             // example: /api/v{version}/users/me => /api/v1/users/me
             options.SubstituteApiVersionInUrl = true;
         });
+    }
+
+    private static IServiceCollection AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
+
+        services.AddQuartz(q =>
+        {
+            const string jobName = nameof(ProcessOutboxMessagesJob);
+
+            q.AddJob<ProcessOutboxMessagesJob>(cfg => cfg.WithIdentity(jobName));
+
+            q.AddTrigger(configure => configure
+                .ForJob(jobName)
+                .WithIdentity($"{jobName}-trigger")
+                .WithSimpleSchedule(schedule =>
+                {
+                    var outboxOptions = configuration
+                        .GetSection("Outbox")
+                        .Get<OutboxOptions>()!;
+
+                    schedule.WithInterval(TimeSpan.FromSeconds(outboxOptions.IntervalInSeconds))
+                           .RepeatForever();
+                }));
+
+        });
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        return services;
     }
 }
