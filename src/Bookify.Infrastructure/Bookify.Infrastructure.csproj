@@ -25,4 +25,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+
+  <ItemGroup>
+	  <InternalsVisibleTo Include="Bookify.Application.IntergrationTests" />
+  </ItemGroup>
+
 </Project>
